@@ -1,69 +1,119 @@
--- Show diagnostic messages inline instead of only a sign in the gutter
 vim.diagnostic.config({
-  virtual_text = true,
+    virtual_text = true,
 })
 
--- Format Python files on save using ruff
-vim.api.nvim_create_autocmd("BufWritePre", {
-  pattern = "*.py",
-  callback = function()
-    vim.lsp.buf.format({
-      filter = function(client)
-        return client.name == "ruff"
-      end,
-    })
-  end,
+vim.api.nvim_create_autocmd('LspAttach', {
+    group = vim.api.nvim_create_augroup('telescope-lsp-attach', { clear = true }),
+    callback = function(ev)
+	-- Buffer local mappings
+	local opts = { buffer = ev.buf, silent = true }
+
+	-- Keymaps
+	opts.desc = "Show LSP references"
+	vim.keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts)
+
+	opts.desc = "Go to declaration"
+	vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+
+	opts.desc = "Show LSP definitions"
+	vim.keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts)
+
+	opts.desc = "Show LSP implementations"
+	vim.keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts)
+
+	opts.desc = "Show LSP type definitions"
+	vim.keymap.set("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", opts)
+
+	opts.desc = "See available code actions"
+	vim.keymap.set({ "n", "v" }, "<leader>vca", function() vim.lsp.buf.code_action() end, opts)
+
+	opts.desc = "Smart rename"
+	vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+
+	opts.desc = "Show buffer diagnostics"
+	vim.keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts)
+
+	opts.desc = "Show line diagnostics"
+	vim.keymap.set("n", "df", function() vim.diagnostic.open_float() end, opts)
+
+	opts.desc = "Show documentation for what is under cursor"
+	vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+
+	opts.desc = "Show signature help"
+	vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
+    end,
 })
 
 return {
-  {
-    'saghen/blink.cmp',
-    dependencies = { 'rafamadriz/friendly-snippets' },
-    version = '1.*',
-    event = { "InsertEnter" },
-    opts = {
-      -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
-      -- 'super-tab' for mappings similar to vscode (tab to accept)
-      -- 'enter' for enter to accept
-      -- 'none' for no mappings
-      --
-      -- All presets have the following mappings:
-      -- C-space: Open menu or open docs if already open
-      -- C-n/C-p or Up/Down: Select next/previous item
-      -- C-e: Hide menu
-      -- C-k: Toggle signature help (if signature.enabled = true)
-      --
-      -- See :h blink-cmp-config-keymap for defining your own keymap
-      keymap = { preset = 'default' },
-      signature = { enabled = true },
-      appearance = {
-        nerd_font_variant = 'mono',
-        use_nvim_cmp_as_default = true,
-      },
-      -- (Default) Only show the documentation popup when manually triggered
-      completion = { documentation = { auto_show = false } },
-      -- Default list of enabled providers defined so that you can extend it
-      -- elsewhere in your config, without redefining it, due to `opts_extend`
-      sources = {
-        default = { 'lsp', 'path', 'snippets', 'buffer' },
-      },
-      -- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
-      -- You may use a lua implementation instead by using `implementation = "lua"` or fallback to the lua implementation,
-      -- when the Rust fuzzy matcher is not available, by using `implementation = "prefer_rust"`
-      --
-      -- See the fuzzy documentation for more information
-      fuzzy = { implementation = "prefer_rust_with_warning" }
+    'neovim/nvim-lspconfig',
+    dependencies = {
+	{ 'mason-org/mason.nvim', opts = {} },
+	'mason-org/mason-lspconfig.nvim',
+	'WhoIsSethDaniel/mason-tool-installer.nvim',
     },
-    -- no custom `config` here — capabilities are wired up in mason.lua instead,
-    -- which needs to run before mason-lspconfig enables the servers
-  },
-  {
-    "folke/lazydev.nvim",
-    ft = "lua",
-    opts = {
-      library = {
-        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
-      },
-    },
-  },
+    config = function()
+	local servers = {
+	    clangd = {},
+	    html = {},
+	    cssls = {},
+	    ts_ls = {},
+	    pyright = {},
+	    rust_analyzer = {},
+	    stylua = {}, -- Used to format Lua code
+	    roslyn_ls = {},
+	    emmet_language_server = {
+		filetypes = { "html", "css", "javascriptreact", "typescriptreact", "javascript", "typescript" },
+	    },
+	    lua_ls = {
+		on_init = function(client)
+		    client.server_capabilities.documentFormattingProvider = false
+		    if client.workspace_folders then
+			local path = client.workspace_folders[1].name
+			if path ~= vim.fn.stdpath 'config'
+			    and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc')) then
+			    return
+			end
+		    end
+		    local current_settings = client.config.settings
+		    client.config.settings.Lua = vim.tbl_deep_extend('force', current_settings.Lua, {
+			runtime = {
+			    version = 'LuaJIT',
+			    path = { 'lua/?.lua', 'lua/?/init.lua' },
+			},
+			workspace = {
+			    checkThirdParty = false,
+			    library = vim.tbl_extend('force', vim.api.nvim_get_runtime_file('', true), {
+				'${3rd}/luv/library',
+				'${3rd}/busted/library',
+			    }),
+			},
+		    })
+		end,
+		settings = {
+		    Lua = {
+			format = { enable = false },
+		    },
+		},
+	    },
+	}
+
+	require('mason').setup ({
+	    registries = {
+		"github:mason-org/mason-registry",
+		"github:Crashdummyy/mason-registry",
+	    },
+	})
+	require('mason-lspconfig').setup {
+	    automatic_enable = false,
+	}
+
+	local ensure_installed = vim.tbl_keys(servers or {})
+	vim.list_extend(ensure_installed, {})
+	require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+
+	for name, server in pairs(servers) do
+	    vim.lsp.config(name, server)
+	    vim.lsp.enable(name)
+	end
+    end,
 }

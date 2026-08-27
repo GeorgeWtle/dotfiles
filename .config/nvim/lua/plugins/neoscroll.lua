@@ -2,6 +2,6 @@ return {
   "karb94/neoscroll.nvim",
   opts = {
     easing = "linear",
-    duration_multiplier = 0.1
+    duration_multiplier = 0.3
   },
 }
