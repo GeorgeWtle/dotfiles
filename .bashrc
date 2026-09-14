@@ -209,7 +209,8 @@ alias uproxy='unset http_proxy && unset https_proxy && unset GIT_SSL_CAINFO && e
 uproxy
 alias bashrcc='nvim ~/.bashrc'
 alias bashrcs='source ~/.bashrc'
-alias nvimc='(cd ~/.config/nvim && nvim init.lua)'
+# alias nvimc='(cd ~/.config/nvim && nvim init.lua)'
+alias nvimc='(cd ~/dotfiles/.config/nvim && nvim init.lua)'
 alias tmuxc='nvim ~/.config/tmux/tmux.conf'
 alias treec="tree | xsel --clipboard --input"
 alias dea='deactivate'
