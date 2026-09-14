@@ -2,7 +2,8 @@
 vim.g.mapleader = " "
 vim.keymap.set("i", "jj", "<Esc>")
 
-vim.keymap.set("n", "<leader>cd", vim.cmd.Ex)
+-- vim.keymap.set("n", "<leader>cd", vim.cmd.Ex)
+vim.keymap.set("n", "<leader>cd", vim.cmd.Oil)
 
 vim.keymap.set("n", "<leader>w", ":w<CR>")
 vim.keymap.set("n", "<leader>q", ":q<CR>")

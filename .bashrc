@@ -240,9 +240,9 @@ px() {
     fi
 }
 
-if [[ $- == *i* ]] && [[ -z "$TMUX" ]]; then
-    px
-fi
+# if [[ $- == *i* ]] && [[ -z "$TMUX" ]]; then
+#     px
+# fi
 
 # SSH - for connection to remote servers
 # Meteo-France
