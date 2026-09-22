@@ -215,6 +215,7 @@ alias tmuxc='nvim ~/.config/tmux/tmux.conf'
 alias treec="tree | xsel --clipboard --input"
 alias dea='deactivate'
 alias viphd='cdphd && avenv && vi .'
+alias viobs='cd ~/Documents/my_obsidian && vi .'
 
 # CDO
 timespan () {

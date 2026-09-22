@@ -28,3 +28,35 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
   }
 )
 
+-- Insert markdown templates
+vim.api.nvim_create_user_command("Template", function()
+  local template_dir = vim.fn.expand("~/Documents/my_obsidian/Templates/")
+
+  local templates = vim.fn.glob(
+    template_dir .. "/*.md",
+    false,
+    true
+  )
+
+  if #templates == 0 then
+    print("No Markdown templates found")
+    return
+  end
+
+  local names = {}
+  for _, path in ipairs(templates) do
+    table.insert(names, vim.fn.fnamemodify(path, ":t"))
+  end
+
+  vim.ui.select(names, {
+    prompt = "Choose a Markdown template:",
+  }, function(choice)
+    if not choice then
+      return
+    end
+
+    local template = template_dir .. "/" .. choice
+
+    vim.cmd("read " .. vim.fn.fnameescape(template))
+  end)
+end, {})
