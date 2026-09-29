@@ -5,6 +5,7 @@ vim.opt.relativenumber = true -- show relative number line
 vim.opt.cursorline = true -- show current line
 vim.opt.shiftwidth = 2 -- shoudl be 4?
 vim.smartindent = true -- ?? not sure
+vim.opt.conceallevel = 2
 vim.api.nvim_set_hl(
   0, "CursorLineNr",
   {
@@ -60,3 +61,12 @@ vim.api.nvim_create_user_command("Template", function()
     vim.cmd("read " .. vim.fn.fnameescape(template))
   end)
 end, {})
+
+-- Markdown
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function()
+    vim.opt_local.linebreak = true
+    vim.opt_local.breakindent = true
+  end,
+})

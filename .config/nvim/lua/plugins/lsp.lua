@@ -4,16 +4,6 @@ vim.diagnostic.config({
 })
 
 -- Format Python files on save using ruff
-vim.api.nvim_create_autocmd("BufWritePre", {
-  pattern = "*.py",
-  callback = function()
-    vim.lsp.buf.format({
-      filter = function(client)
-        return client.name == "ruff"
-      end,
-    })
-  end,
-})
 
 return {
   {
@@ -45,7 +35,12 @@ return {
       -- Default list of enabled providers defined so that you can extend it
       -- elsewhere in your config, without redefining it, due to `opts_extend`
       sources = {
-        default = { 'lsp', 'path', 'snippets', 'buffer' },
+	default = { 'lsp', 'path', 'snippets', 'buffer' },
+	-- per_filetype = {
+	--   markdown = {
+	--     'lsp',
+	--   }
+	-- },
       },
       -- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
       -- You may use a lua implementation instead by using `implementation = "lua"` or fallback to the lua implementation,

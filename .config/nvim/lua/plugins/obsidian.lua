@@ -3,6 +3,10 @@ return {
   version = "*", -- use latest release, remove to use latest commit
   ---@module 'obsidian'
   ---@type obsidian.config
+  -- dependencies = {
+  --   "nvim-lua/plenary.nvim",
+  --   "saghen/blink.cmp",
+  -- },
   opts = {
     legacy_commands = false, -- this will be removed in 4.0.0
     workspaces = {
@@ -11,5 +15,7 @@ return {
         path = "~/Documents/my_obsidian/",
       },
     },
+    link = { style = 'wiki', format = 'shortest' },
+    frontmatter = { enabled = false }
   },
 }

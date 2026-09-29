@@ -21,6 +21,9 @@ vim.keymap.set("n", "<Esc>", ":noh<CR>", { silent = true })
 vim.keymap.set("n", "<Tab>", ":bnext<CR>")
 vim.keymap.set("n", "<C-Tab>", ":bprev<CR>")
 
+vim.keymap.set("n", "j", "gj")
+vim.keymap.set("n", "k", "gk")
+
 -- Python
 vim.keymap.set(
     "n", "<leader>R",
