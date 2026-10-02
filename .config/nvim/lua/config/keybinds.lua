@@ -24,18 +24,18 @@ vim.keymap.set("n", "<C-Tab>", ":bprev<CR>")
 vim.keymap.set("n", "j", "gj")
 vim.keymap.set("n", "k", "gk")
 
+vim.keymap.set("v", "<", "<gv")
+vim.keymap.set("v", ">", ">gv")
+
 -- Python
-vim.keymap.set(
-    "n", "<leader>R",
-    function()
+vim.keymap.set("n", "<leader>R", function()
 	vim.cmd("w")
 	vim.cmd("!python3 %")
-    end
-)
+end)
 
 -- Terminal
 vim.g.tmux_navigator_no_mappings = 1
-vim.keymap.set({ "n", "t" }, "<C-h>", "<Cmd>TmuxNavigateLeft<CR>",  { silent = true })
-vim.keymap.set({ "n", "t" }, "<C-j>", "<Cmd>TmuxNavigateDown<CR>",  { silent = true })
-vim.keymap.set({ "n", "t" }, "<C-k>", "<Cmd>TmuxNavigateUp<CR>",    { silent = true })
+vim.keymap.set({ "n", "t" }, "<C-h>", "<Cmd>TmuxNavigateLeft<CR>", { silent = true })
+vim.keymap.set({ "n", "t" }, "<C-j>", "<Cmd>TmuxNavigateDown<CR>", { silent = true })
+vim.keymap.set({ "n", "t" }, "<C-k>", "<Cmd>TmuxNavigateUp<CR>", { silent = true })
 vim.keymap.set({ "n", "t" }, "<C-l>", "<Cmd>TmuxNavigateRight<CR>", { silent = true })
