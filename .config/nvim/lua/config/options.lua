@@ -6,7 +6,7 @@ vim.opt.cursorline = true -- show current line
 vim.opt.shiftwidth = 2 -- shoudl be 4?
 vim.smartindent = true -- ?? not sure
 vim.opt.conceallevel = 2
-vim.opt.scrolloff = 10
+vim.opt.scrolloff = 3
 vim.api.nvim_set_hl(0, "CursorLineNr", {
 	fg = "#f38ba8", -- change color of current line number
 	bold = false,
